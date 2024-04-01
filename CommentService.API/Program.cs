@@ -1,4 +1,6 @@
 
+using CommentService.API.Models;
+
 namespace CommentService.API
 {
     public class Program
@@ -14,6 +16,12 @@ namespace CommentService.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            //Database
+            builder.Services.Configure<CommentDBSettings>(
+            builder.Configuration.GetSection("CommentDB"));
+
+            builder.Services.AddSingleton<Services.CommentService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -23,7 +31,7 @@ namespace CommentService.API
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
