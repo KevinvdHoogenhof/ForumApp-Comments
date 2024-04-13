@@ -1,4 +1,5 @@
 ﻿using CommentService.API.Models;
+using CommentService.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
@@ -9,8 +10,8 @@ namespace CommentService.API.Controllers
     [Route("[controller]")]
     public class CommentController : ControllerBase
     {
-        private readonly Services.CommentService _service;
-        public CommentController(Services.CommentService service) =>
+        private readonly ICommentService _service;
+        public CommentController(ICommentService service) =>
             _service = service;
 
         [HttpGet]

@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace CommentService.API.Services
 {
-    public class CommentService
+    public class CommentService : ICommentService
     {
         private readonly IMongoCollection<Comment> _comments;
         public CommentService(IOptions<CommentDBSettings> settings)

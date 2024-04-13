@@ -1,5 +1,7 @@
 
+using CommentService.API.Context;
 using CommentService.API.Models;
+using CommentService.API.Services;
 
 namespace CommentService.API
 {
@@ -20,7 +22,9 @@ namespace CommentService.API
             builder.Services.Configure<CommentDBSettings>(
             builder.Configuration.GetSection("CommentDB"));
 
-            builder.Services.AddSingleton<Services.CommentService>();
+            builder.Services.AddSingleton<ICommentContext, CommentContext>();
+
+            builder.Services.AddSingleton<ICommentService, Services.CommentService>();
 
             var app = builder.Build();
 
