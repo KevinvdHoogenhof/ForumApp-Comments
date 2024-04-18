@@ -2,6 +2,7 @@
 using CommentService.API.Context;
 using CommentService.API.Models;
 using CommentService.API.Services;
+using MongoDB.Driver;
 
 namespace CommentService.API
 {
@@ -19,8 +20,11 @@ namespace CommentService.API
             builder.Services.AddSwaggerGen();
 
             //Database
-            builder.Services.Configure<CommentDBSettings>(
-            builder.Configuration.GetSection("CommentDB"));
+            //builder.Services.Configure<CommentDBSettings>(
+            //builder.Configuration.GetSection("CommentDB"));
+
+            var connString = builder.Configuration.GetConnectionString("MongoDB");
+            builder.Services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(connString));
 
             builder.Services.AddSingleton<ICommentContext, CommentContext>();
 

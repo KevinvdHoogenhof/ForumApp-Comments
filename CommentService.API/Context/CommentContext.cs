@@ -7,12 +7,17 @@ namespace CommentService.API.Context
     public class CommentContext : ICommentContext
     {
         private readonly IMongoCollection<Comment> _comment;
-        public CommentContext(IOptions<CommentDBSettings> commentdbsettings)
+        public CommentContext(IMongoClient mongoClient)
+        {
+            var mongoDatabase = mongoClient.GetDatabase("CommentDB");
+            _comment = mongoDatabase.GetCollection<Comment>("Comments");
+        }
+        /*public CommentContext(IOptions<CommentDBSettings> commentdbsettings)
         {
             var mongoClient = new MongoClient(commentdbsettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(commentdbsettings.Value.DatabaseName);
             _comment = mongoDatabase.GetCollection<Comment>(commentdbsettings.Value.CollectionName);
-        }
+        }*/
         public async Task<Comment?> GetAsync(string id)
         {
             return await _comment.Find(x => x.Id == id).FirstOrDefaultAsync();
