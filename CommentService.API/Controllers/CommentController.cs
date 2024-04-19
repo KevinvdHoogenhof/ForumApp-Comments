@@ -23,12 +23,12 @@ namespace CommentService.API.Controllers
             await _service.GetCommentsByName(name);
 
         [HttpGet("GetCommentsByThreadId")]
-        public async Task<List<Comment>> GetCommentsByThreadId(string name) =>
-            await _service.GetCommentsByThreadId(name);
+        public async Task<List<Comment>> GetCommentsByThreadId(string id) =>
+            await _service.GetCommentsByThreadId(id);
 
         [HttpGet("GetCommentsByPostId")]
-        public async Task<List<Comment>> GetCommentsByPostId(string name) =>
-            await _service.GetCommentsByPostId(name);
+        public async Task<List<Comment>> GetCommentsByPostId(string id) =>
+            await _service.GetCommentsByPostId(id);
 
         [HttpGet("GetCommentsByAuthorId")]
         public async Task<List<Comment>> GetCommentsByAuthorId(int id) =>

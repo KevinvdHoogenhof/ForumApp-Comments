@@ -7,8 +7,8 @@ namespace CommentService.API.Context
         public Task<Comment?> GetAsync(string id);
         public Task<List<Comment>> GetAsync();
         public Task<List<Comment>> GetAsyncNameSearch(string name);
-        public Task<List<Comment>> GetAsyncByThreadId(string name);
-        public Task<List<Comment>> GetAsyncByPostId(string name);
+        public Task<List<Comment>> GetAsyncByThreadId(string id);
+        public Task<List<Comment>> GetAsyncByPostId(string id);
         public Task<List<Comment>> GetAsyncByAuthorId(int id);
         public Task<Comment?> CreateAsync(Comment comment);
         public Task<Comment?> UpdateAsync(Comment comment);

@@ -57,7 +57,7 @@ namespace CommentService.API.Context
         public async Task<List<Comment>> GetAsyncByAuthorId(int id)
         {
             var filter = Builders<Comment>.Filter.Eq(c => c.AuthorId, id);
-            return await _comments.Find(_ => true).ToListAsync();
+            return await (await _comments.FindAsync(filter)).ToListAsync();
         }
 
         public async Task<Comment?> CreateAsync(Comment comment)
