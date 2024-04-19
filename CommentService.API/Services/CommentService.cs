@@ -24,14 +24,34 @@ namespace CommentService.API.Services
             return await _context.GetAsync();
         }
 
-        public async Task InsertComment(Comment comment)
+        public async Task<List<Comment>> GetCommentsByName(string id)
         {
-            await _context.CreateAsync(comment);
+            return await _context.GetAsyncNameSearch(id);
         }
 
-        public async Task UpdateComment(Comment comment)
+        public async Task<List<Comment>> GetCommentsByThreadId(string id)
         {
-            await _context.UpdateAsync(comment);
+            return await _context.GetAsyncByThreadId(id);
+        }
+
+        public async Task<List<Comment>> GetCommentsByPostId(string id)
+        {
+            return await _context.GetAsyncByPostId(id);
+        }
+
+        public async Task<List<Comment>> GetCommentsByAuthorId(int id)
+        {
+            return await _context.GetAsyncByAuthorId(id);
+        }
+
+        public async Task<Comment?> InsertComment(Comment comment)
+        {
+            return await _context.CreateAsync(comment);
+        }
+
+        public async Task<Comment?> UpdateComment(Comment comment)
+        {
+            return await _context.UpdateAsync(comment);
         }
 
         public async Task DeleteComment(string id)

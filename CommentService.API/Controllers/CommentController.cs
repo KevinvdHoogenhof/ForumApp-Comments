@@ -16,7 +16,23 @@ namespace CommentService.API.Controllers
 
         [HttpGet]
         public async Task<List<Comment>> Get() =>
-            await _service.GetComments(); 
+            await _service.GetComments();
+
+        [HttpGet("GetCommentsByName")]
+        public async Task<List<Comment>> GetCommentsByName(string name) =>
+            await _service.GetCommentsByName(name);
+
+        [HttpGet("GetCommentsByThreadId")]
+        public async Task<List<Comment>> GetCommentsByThreadId(string name) =>
+            await _service.GetCommentsByThreadId(name);
+
+        [HttpGet("GetCommentsByPostId")]
+        public async Task<List<Comment>> GetCommentsByPostId(string name) =>
+            await _service.GetCommentsByPostId(name);
+
+        [HttpGet("GetCommentsByAuthorId")]
+        public async Task<List<Comment>> GetCommentsByAuthorId(int id) =>
+            await _service.GetCommentsByAuthorId(id);
 
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<Comment>> Get(string id) 
@@ -32,14 +48,15 @@ namespace CommentService.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Comment comment) 
-        {
-            await _service.InsertComment(comment);
-            return CreatedAtAction(nameof(Get), new { id = comment.Id }, comment);
-        }
+        public async Task<ActionResult<Comment>> Post(InsertCommentDTO comment) =>
+            CreatedAtAction(nameof(Get), new
+            {
+                id = ((await _service.InsertComment(new Comment { ThreadId = comment.ThreadId, ThreadName = comment.ThreadName, PostId = comment.PostId, PostName = comment.PostName, AuthorId = comment.AuthorId, AuthorName = comment.AuthorName, Name = comment.Name, Content = comment.Content }))?.Id)
+                ?? throw new InvalidOperationException("Failed to insert the comment.")
+            }, comment);
 
         [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update(string id, Comment comment)
+        public async Task<ActionResult<Comment>> Update(string id, UpdateCommentDTO comment)
         {
             var c = await _service.GetComment(id);
 
@@ -48,9 +65,17 @@ namespace CommentService.API.Controllers
                 return NotFound();
             }
 
-            await _service.UpdateComment(comment);
+            c.Name = comment.Name;
+            c.Content = comment.Content;
 
-            return NoContent();
+            var co = await _service.UpdateComment(c); 
+            
+            if (co is null)
+            {
+                return NotFound();
+            }
+
+            return co;
         }
 
         [HttpDelete("{id:length(24)}")]

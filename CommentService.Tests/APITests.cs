@@ -1,4 +1,5 @@
 ﻿using CommentService.API;
+using CommentService.API.SeedData;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,13 +15,14 @@ using System.Threading.Tasks;
 
 namespace CommentService.Tests
 {
-    public class CommentTests : IClassFixture<MongoDbFixture>, IDisposable
+    public class APITests : IClassFixture<MongoDbFixture>, IDisposable
     {
         private readonly MongoDbFixture _fixture;
         private readonly HttpClient _client;
-        public CommentTests(MongoDbFixture fixture)
+        public APITests(MongoDbFixture fixture)
         {
             _fixture = fixture;
+            var dataSeedingConfig = new DataSeedingConfiguration { SeedDataEnabled = false };
             var appFactory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
@@ -29,6 +31,8 @@ namespace CommentService.Tests
                         services.RemoveAll<IMongoClient>();
                         services.AddSingleton<IMongoClient>(
                             (_) => _fixture.Client);
+                        services.RemoveAll<IDataSeedingConfiguration>();
+                        services.AddSingleton<IDataSeedingConfiguration>(dataSeedingConfig);
                     });
                 });
             _client = appFactory.CreateClient();

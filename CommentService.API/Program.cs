@@ -1,6 +1,7 @@
 
 using CommentService.API.Context;
 using CommentService.API.Models;
+using CommentService.API.SeedData;
 using CommentService.API.Services;
 using MongoDB.Driver;
 
@@ -25,6 +26,8 @@ namespace CommentService.API
 
             var connString = builder.Configuration.GetConnectionString("MongoDB");
             builder.Services.AddSingleton<IMongoClient, MongoClient>(_ => new MongoClient(connString));
+
+            builder.Services.AddSingleton<IDataSeedingConfiguration, DataSeedingConfiguration>();
 
             builder.Services.AddSingleton<ICommentContext, CommentContext>();
 
