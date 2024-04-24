@@ -1,42 +1,62 @@
-﻿using CommentService.API.Models;
+﻿using CommentService.API.Context;
+using CommentService.API.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Xml.Linq;
 
 namespace CommentService.API.Services
 {
-    public class CommentService
+    public class CommentService : ICommentService
     {
-        private readonly IMongoCollection<Comment> _comments;
-        public CommentService(IOptions<CommentDBSettings> settings)
+        private readonly ICommentContext _context;
+        public CommentService(ICommentContext context)
         {
-            var mongoClient = new MongoClient(settings.Value.ConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(settings.Value.DatabaseName);
-            _comments = mongoDatabase.GetCollection<Comment>(settings.Value.CollectionName);
+            _context = context;
         }
         public async Task<Comment?> GetComment(string id)
         {
-            return await _comments.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return await _context.GetAsync(id);
         }
 
         public async Task<List<Comment>> GetComments()
         {
-            return await _comments.Find(_ => true).ToListAsync();
+            return await _context.GetAsync();
         }
 
-        public async Task InsertComment(Comment comment)
+        public async Task<List<Comment>> GetCommentsByName(string id)
         {
-            await _comments.InsertOneAsync(comment);
+            return await _context.GetAsyncNameSearch(id);
         }
 
-        public async Task UpdateComment(Comment comment)
+        public async Task<List<Comment>> GetCommentsByThreadId(string id)
         {
-            await _comments.ReplaceOneAsync(x => x.Id == comment.Id, comment);
+            return await _context.GetAsyncByThreadId(id);
+        }
+
+        public async Task<List<Comment>> GetCommentsByPostId(string id)
+        {
+            return await _context.GetAsyncByPostId(id);
+        }
+
+        public async Task<List<Comment>> GetCommentsByAuthorId(int id)
+        {
+            return await _context.GetAsyncByAuthorId(id);
+        }
+
+        public async Task<Comment?> InsertComment(Comment comment)
+        {
+            return await _context.CreateAsync(comment);
+        }
+
+        public async Task<Comment?> UpdateComment(Comment comment)
+        {
+            return await _context.UpdateAsync(comment);
         }
 
         public async Task DeleteComment(string id)
         {
-            await _comments.DeleteOneAsync(x => x.Id == id);
+            await _context.RemoveAsync(id);
         }
     }
 }
