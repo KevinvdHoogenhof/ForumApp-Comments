@@ -91,7 +91,7 @@ namespace CommentService.Tests
             await collection.InsertOneAsync(comment3);
 
             // Act
-            var res = await _client.GetAsync("/comment/getcommentsbyname?name=Test");
+            var res = await _client.GetAsync("/comment/getcommentsbyname/Test");
             res.EnsureSuccessStatusCode();
             var content = await res.Content.ReadAsStringAsync();
             var comments = JsonSerializer.Deserialize<ICollection<API.Models.Comment>>(content, new JsonSerializerOptions
@@ -113,15 +113,15 @@ namespace CommentService.Tests
             // Arrange
             var _db = _fixture.Client.GetDatabase("CommentDB");
             var collection = _db.GetCollection<API.Models.Comment>("Comments");
-            API.Models.Comment comment1 = new() { ThreadId = "tid", ThreadName = "test", PostId = "test", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "Test", Content = "test" };
-            API.Models.Comment comment2 = new() { ThreadId = "tid", ThreadName = "test", PostId = "test", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "Test", Content = "test" };
-            API.Models.Comment comment3 = new() { ThreadId = "test", ThreadName = "test", PostId = "test", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "different name", Content = "test" };
+            API.Models.Comment comment1 = new() { ThreadId = "tid1_1234512345123451234", ThreadName = "test", PostId = "test", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "Test", Content = "test" };
+            API.Models.Comment comment2 = new() { ThreadId = "tid1_1234512345123451234", ThreadName = "test", PostId = "test", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "Test", Content = "test" };
+            API.Models.Comment comment3 = new() { ThreadId = "test_1234512345123451234", ThreadName = "test", PostId = "test", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "different name", Content = "test" };
             await collection.InsertOneAsync(comment1);
             await collection.InsertOneAsync(comment2);
             await collection.InsertOneAsync(comment3);
 
             // Act
-            var res = await _client.GetAsync("/comment/getcommentsbythreadid?id=tid");
+            var res = await _client.GetAsync("/comment/getcommentsbythreadid/tid1_1234512345123451234");
             res.EnsureSuccessStatusCode();
             var content = await res.Content.ReadAsStringAsync();
             var comments = JsonSerializer.Deserialize<ICollection<API.Models.Comment>>(content, new JsonSerializerOptions
@@ -135,7 +135,7 @@ namespace CommentService.Tests
             Assert.Equal(2, comments.Count);
             var resultItem = comments.FirstOrDefault();
             Assert.NotNull(resultItem);
-            Assert.Contains("tid", resultItem.ThreadId);
+            Assert.Contains("tid1_1234512345123451234", resultItem.ThreadId);
         }
         [Fact]
         public async Task GetAllCommentsByPostId_ShouldReturnCommentsWithPostId()
@@ -143,15 +143,15 @@ namespace CommentService.Tests
             // Arrange
             var _db = _fixture.Client.GetDatabase("CommentDB");
             var collection = _db.GetCollection<API.Models.Comment>("Comments");
-            API.Models.Comment comment1 = new() { ThreadId = "tid", ThreadName = "test", PostId = "pid", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "Test", Content = "test" };
-            API.Models.Comment comment2 = new() { ThreadId = "tid", ThreadName = "test", PostId = "pid", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "Test", Content = "test" };
-            API.Models.Comment comment3 = new() { ThreadId = "test", ThreadName = "test", PostId = "test", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "different name", Content = "test" };
+            API.Models.Comment comment1 = new() { ThreadId = "tid", ThreadName = "test", PostId = "pid1_1234512345123451234", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "Test", Content = "test" };
+            API.Models.Comment comment2 = new() { ThreadId = "tid", ThreadName = "test", PostId = "pid1_1234512345123451234", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "Test", Content = "test" };
+            API.Models.Comment comment3 = new() { ThreadId = "test", ThreadName = "test", PostId = "test_1234512345123451234", PostName = "test", AuthorId = 0, AuthorName = "test", Name = "different name", Content = "test" };
             await collection.InsertOneAsync(comment1);
             await collection.InsertOneAsync(comment2);
             await collection.InsertOneAsync(comment3);
 
             // Act
-            var res = await _client.GetAsync("/comment/getcommentsbypostid?id=pid");
+            var res = await _client.GetAsync("/comment/getcommentsbypostid/pid1_1234512345123451234");
             res.EnsureSuccessStatusCode();
             var content = await res.Content.ReadAsStringAsync();
             var comments = JsonSerializer.Deserialize<ICollection<API.Models.Comment>>(content, new JsonSerializerOptions
@@ -165,7 +165,7 @@ namespace CommentService.Tests
             Assert.Equal(2, comments.Count);
             var resultItem = comments.FirstOrDefault();
             Assert.NotNull(resultItem);
-            Assert.Contains("pid", resultItem.PostId);
+            Assert.Contains("pid1_1234512345123451234", resultItem.PostId);
         }
         [Fact]
         public async Task GetAllCommentsByAuthorId_ShouldReturnCommentsWithAuthorId()
@@ -181,7 +181,7 @@ namespace CommentService.Tests
             await collection.InsertOneAsync(comment3);
 
             // Act
-            var res = await _client.GetAsync("/comment/getcommentsbyauthorid?id=0");
+            var res = await _client.GetAsync("/comment/getcommentsbyauthorid/0");
             res.EnsureSuccessStatusCode();
             var content = await res.Content.ReadAsStringAsync();
             var comments = JsonSerializer.Deserialize<ICollection<API.Models.Comment>>(content, new JsonSerializerOptions

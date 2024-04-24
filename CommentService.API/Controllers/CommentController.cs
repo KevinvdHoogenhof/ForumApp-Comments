@@ -18,7 +18,7 @@ namespace CommentService.API.Controllers
         public async Task<List<Comment>> Get() =>
             await _service.GetComments();
 
-        [HttpGet("GetCommentsByName/{name:length(24)}")]
+        [HttpGet("GetCommentsByName/{name}")]
         public async Task<List<Comment>> GetCommentsByName(string name) =>
             await _service.GetCommentsByName(name);
 
@@ -30,7 +30,7 @@ namespace CommentService.API.Controllers
         public async Task<List<Comment>> GetCommentsByPostId(string id) =>
             await _service.GetCommentsByPostId(id);
 
-        [HttpGet("GetCommentsByAuthorId/{id:length(24)}")]
+        [HttpGet("GetCommentsByAuthorId/{id)}")]
         public async Task<List<Comment>> GetCommentsByAuthorId(int id) =>
             await _service.GetCommentsByAuthorId(id);
 
