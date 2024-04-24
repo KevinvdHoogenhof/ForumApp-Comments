@@ -18,19 +18,19 @@ namespace CommentService.API.Controllers
         public async Task<List<Comment>> Get() =>
             await _service.GetComments();
 
-        [HttpGet("GetCommentsByName")]
+        [HttpGet("GetCommentsByName/{name:length(24)}")]
         public async Task<List<Comment>> GetCommentsByName(string name) =>
             await _service.GetCommentsByName(name);
 
-        [HttpGet("GetCommentsByThreadId")]
+        [HttpGet("GetCommentsByThreadId/{id:length(24)}")]
         public async Task<List<Comment>> GetCommentsByThreadId(string id) =>
             await _service.GetCommentsByThreadId(id);
 
-        [HttpGet("GetCommentsByPostId")]
+        [HttpGet("GetCommentsByPostId/{id:length(24)}")]
         public async Task<List<Comment>> GetCommentsByPostId(string id) =>
             await _service.GetCommentsByPostId(id);
 
-        [HttpGet("GetCommentsByAuthorId")]
+        [HttpGet("GetCommentsByAuthorId/{id:length(24)}")]
         public async Task<List<Comment>> GetCommentsByAuthorId(int id) =>
             await _service.GetCommentsByAuthorId(id);
 
