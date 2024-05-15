@@ -1,8 +1,10 @@
-﻿using CommentService.API.Models;
+﻿using CommentService.API.Kafka;
+using CommentService.API.Models;
 using CommentService.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json;
 
 namespace CommentService.API.Controllers
 {
@@ -11,8 +13,12 @@ namespace CommentService.API.Controllers
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _service;
-        public CommentController(ICommentService service) =>
+        private readonly IKafkaProducer _producer;
+        public CommentController(ICommentService service, IKafkaProducer producer)
+        {
             _service = service;
+            _producer = producer;
+        }
 
         [HttpGet]
         public async Task<List<Comment>> Get() =>
@@ -48,12 +54,19 @@ namespace CommentService.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Comment>> Post(InsertCommentDTO comment) =>
-            CreatedAtAction(nameof(Get), new
+        public async Task<ActionResult<Comment>> Post(InsertCommentDTO comment, CancellationToken stoppingToken)
+        {
+            var insertedComment = await _service.InsertComment(new Comment { ThreadId = comment.ThreadId, ThreadName = comment.ThreadName, PostId = comment.PostId, PostName = comment.PostName, AuthorId = comment.AuthorId, AuthorName = comment.AuthorName, Name = comment.Name, Content = comment.Content });
+
+            var comments = await _service.GetCommentsByPostId(insertedComment.PostId);
+
+            _ = _producer.Produce(JsonSerializer.Serialize(new { insertedComment?.PostId, comments }), stoppingToken);
+
+            return CreatedAtAction(nameof(Get), new
             {
-                id = ((await _service.InsertComment(new Comment { ThreadId = comment.ThreadId, ThreadName = comment.ThreadName, PostId = comment.PostId, PostName = comment.PostName, AuthorId = comment.AuthorId, AuthorName = comment.AuthorName, Name = comment.Name, Content = comment.Content }))?.Id)
-                ?? throw new InvalidOperationException("Failed to insert the comment.")
+                id = (insertedComment?.Id) ?? throw new InvalidOperationException("Failed to insert the comment.")
             }, comment);
+        }
 
         [HttpPut("{id:length(24)}")]
         public async Task<ActionResult<Comment>> Update(string id, UpdateCommentDTO comment)
