@@ -238,6 +238,11 @@ namespace CommentService.Tests
                 return Task.FromResult(comments);
             }
 
+            Task<int> ICommentContext.GetAsyncCommentAmountByPostId(string id)
+            {
+                throw new NotImplementedException();
+            }
+
             Task<List<Comment>> ICommentContext.GetAsyncNameSearch(string name)
             {
                 var comments = _comments.Where(comment => comment.Name.Contains(name)).ToList();

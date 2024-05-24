@@ -39,6 +39,11 @@ namespace CommentService.API.Services
             return await _context.GetAsyncByPostId(id);
         }
 
+        public async Task<int> GetAmountOfCommentsByPostId(string id)
+        {
+            return await _context.GetAsyncCommentAmountByPostId(id);
+        }
+
         public async Task<List<Comment>> GetCommentsByAuthorId(int id)
         {
             return await _context.GetAsyncByAuthorId(id);

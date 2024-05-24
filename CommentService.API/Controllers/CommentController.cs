@@ -58,7 +58,7 @@ namespace CommentService.API.Controllers
         {
             var insertedComment = await _service.InsertComment(new Comment { ThreadId = comment.ThreadId, ThreadName = comment.ThreadName, PostId = comment.PostId, PostName = comment.PostName, AuthorId = comment.AuthorId, AuthorName = comment.AuthorName, Name = comment.Name, Content = comment.Content });
 
-            var comments = await _service.GetCommentsByPostId(insertedComment.PostId);
+            int comments = await _service.GetAmountOfCommentsByPostId(insertedComment.PostId);
 
             _ = _producer.Produce(JsonSerializer.Serialize(new { insertedComment?.PostId, comments }), stoppingToken);
 
@@ -92,7 +92,7 @@ namespace CommentService.API.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id, CancellationToken stoppingToken)
         {
             var c = await _service.GetComment(id);
 
@@ -102,6 +102,10 @@ namespace CommentService.API.Controllers
             }
 
             await _service.DeleteComment(id);
+
+            int comments = await _service.GetAmountOfCommentsByPostId(c.PostId);
+
+            _ = _producer.Produce(JsonSerializer.Serialize(new { c?.PostId, comments }), stoppingToken);
 
             return NoContent();
         }

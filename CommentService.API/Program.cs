@@ -40,7 +40,7 @@ namespace CommentService.API
             //Kafka producer
             var producerConfig = builder.Configuration.GetSection("ProducerConfig").Get<ProducerConfig>();
             var producer = new ProducerBuilder<Null, string>(producerConfig).Build();
-            builder.Services.AddSingleton<IKafkaProducer>(_ => new KafkaProducer(producer, "newpost"));
+            builder.Services.AddSingleton<IKafkaProducer>(_ => new KafkaProducer(producer, "newcomment"));
 
             //Kafka consumer
             var consumerConfig = builder.Configuration.GetSection("ConsumerConfig").Get<ConsumerConfig>();
