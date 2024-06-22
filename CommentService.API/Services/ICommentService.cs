@@ -9,6 +9,7 @@ namespace CommentService.API.Services
         public Task<List<Comment>> GetCommentsByName(string name);
         public Task<List<Comment>> GetCommentsByThreadId(string id);
         public Task<List<Comment>> GetCommentsByPostId(string id);
+        public Task<int> GetAmountOfCommentsByPostId(string id);
         public Task<List<Comment>> GetCommentsByAuthorId(int id);
         public Task<Comment?> InsertComment(Comment comment);
         public Task<Comment?> UpdateComment(Comment comment);

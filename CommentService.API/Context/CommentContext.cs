@@ -54,6 +54,12 @@ namespace CommentService.API.Context
             return await (await _comments.FindAsync(filter)).ToListAsync();
         }
 
+        public async Task<int> GetAsyncCommentAmountByPostId(string id)
+        {
+            var filter = Builders<Comment>.Filter.Eq(c => c.PostId, id);
+            return (int)await _comments.CountDocumentsAsync(filter);
+        }
+
         public async Task<List<Comment>> GetAsyncByAuthorId(int id)
         {
             var filter = Builders<Comment>.Filter.Eq(c => c.AuthorId, id);
